@@ -6,27 +6,28 @@ if [[ -z "$PLUSHU_BUILDPACKS_DIR" ]]; then
   exit 1
 fi
 
+config_url=https://raw.githubusercontent.com/progrium/buildstep/master/builder/config/buildpacks.txt
+
 i=`ls -f "$PLUSHU_BUILDPACKS_DIR" | wc -l`
 
-buildpacks=(
-  https://github.com/ddollar/heroku-buildpack-multi.git#93505719
-  https://github.com/heroku/heroku-buildpack-ruby.git#v127
-  https://github.com/heroku/heroku-buildpack-nodejs.git#v60
-  https://github.com/heroku/heroku-buildpack-clojure.git#bc2bfd83
-  https://github.com/heroku/heroku-buildpack-python.git#v52
-  https://github.com/heroku/heroku-buildpack-java.git#v29
-  https://github.com/heroku/heroku-buildpack-gradle.git#f9127a26
-  https://github.com/heroku/heroku-buildpack-grails.git#1ef927d2
-  https://github.com/heroku/heroku-buildpack-scala.git#v42
-  https://github.com/heroku/heroku-buildpack-play.git#ceede861
-  https://github.com/heroku/heroku-buildpack-php.git#v44
-  https://github.com/heroku/heroku-buildpack-go.git#b261aab1
-)
-
-for url in "${buildpacks[@]}"; do
+while read url; do
   buildpack=${url%https://github.com/*/}
   buildpack=${buildpack##.git#*}
   "$PLUSHU_ROOT/lib/plushook" install-buildpack $(printf '%02i_%s' \
     "$i" "${buildpack##*/}") "https://github.com/$buildpack.git"
   i=$((i+1))
-done
+done < <(curl "$config_url" 2>&1 || cat <<EOF
+https://github.com/ddollar/heroku-buildpack-multi.git
+https://github.com/heroku/heroku-buildpack-ruby.git
+https://github.com/heroku/heroku-buildpack-nodejs.git
+https://github.com/heroku/heroku-buildpack-clojure.git
+https://github.com/heroku/heroku-buildpack-python.git
+https://github.com/heroku/heroku-buildpack-java.git
+https://github.com/heroku/heroku-buildpack-gradle.git
+https://github.com/heroku/heroku-buildpack-grails.git
+https://github.com/heroku/heroku-buildpack-scala.git
+https://github.com/heroku/heroku-buildpack-play.git
+https://github.com/heroku/heroku-buildpack-php.git
+https://github.com/heroku/heroku-buildpack-go.git
+EOF
+)
