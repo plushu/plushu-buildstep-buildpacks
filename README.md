@@ -24,3 +24,10 @@ There are two significant differences:
   is not technically an official Heroku buildpack.
 
 [ddollar/heroku-buildpack-multi]: https://github.com/ddollar/heroku-buildpack-multi
+
+## See also
+
+[plushu/plushu-buildstep-custom-buildpacks][] - adds the custom buildpacks that
+used to be included with buildstep.
+
+[plushu/plushu-buildstep-custom-buildpacks]: https://github.com/plushu/plushu-buildstep-custom-buildpacks
